@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // Variable pour suivre le score
     let score = 0;
     
+    // Ajouter ces variables au début du code, après la déclaration des constantes
+    let fireRate = 30; // Taux de tir initial (plus petit = plus rapide)
+    const minFireRate = 10; // Taux de tir maximum
+    const maxFireRate = 50; // Taux de tir minimum
+    
     // Fonction pour gérer l'état de visibilité du score
     function updateScoreVisibility() {
         const canvas = document.getElementById('spaceInvaders');
@@ -118,6 +123,21 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Ajouter l'écouteur d'événement pour la molette de la souris après les autres écouteurs
+    document.addEventListener('wheel', function(event) {
+        // Empêcher le scroll de la page
+        event.preventDefault();
+        
+        // Ajuster le taux de tir en fonction de la direction du scroll
+        if (event.deltaY < 0) {
+            // Scroll vers le haut = tir plus rapide
+            fireRate = Math.max(minFireRate, fireRate - 2);
+        } else {
+            // Scroll vers le bas = tir plus lent
+            fireRate = Math.min(maxFireRate, fireRate + 2);
+        }
+    });
+
     // Classe pour le vaisseau joueur
     class Player {
         constructor() {
@@ -126,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.x = canvas.width / 2 - this.width / 2;
             this.y = canvas.height - 180; // Remonté plus haut pour laisser de l'espace avec le score
             this.speed = 5;
-            this.cooldown = 0;
+            this.cooldown = fireRate;
             this.bullets = [];
             this.alive = true;
             this.blinkTime = 0;
@@ -164,7 +184,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     this.shoot();
                 }
                 
-                this.cooldown = Math.floor(Math.random() * 25) + 30; // Augmente considérablement le timing entre les tirs
+                // Utiliser fireRate au lieu d'une valeur fixe
+                this.cooldown = fireRate;
             } else {
                 this.cooldown--;
             }
