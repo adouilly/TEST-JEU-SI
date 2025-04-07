@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- Hello World! -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma première page web</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Ajout de Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Canvas pour le jeu Space Invaders (caché par défaut) -->
+    <canvas id="spaceInvaders" style="display: none;"></canvas>
+    
+    <!-- Compteur de score pour le jeu -->
+    <div id="score-counter" style="display: none;">Score: <span>0</span></div>
+    
+    <div class="container">
+        <!-- Icône d'œil en haut à gauche -->
+        <div class="toggle-icon" id="toggle-view">
+            <i class="fas fa-eye"></i>
+        </div>
+        
+        <!-- Icône de fusée en dessous de l'icône d'œil -->
+        <div class="toggle-icon rocket-icon" id="toggle-game">
+            <i class="fas fa-rocket"></i>
+        </div>
+        
+        <!-- Contenu principal -->
+        <div id="main-content">
+            <!-- Image du haut -->
+            <div class="image-container">
+                <img src="https://i.postimg.cc/k42gSnBn/27867206-558622901188028-2983271876368265734-n.jpg" alt="Image principale">
+            </div>
+            
+            <!-- Titre (reste toujours visible) -->
+            <h1 class="neon-text" id="main-title">Ma première page web</h1>
+            
+            <!-- Conteneur de texte -->
+            <div class="text-container">
+                <p class="modern-text" id="text-preview">
+                    Mon intérêt pour le développement web et les applications découle de plusieurs motivations profondes. Tout d'abord, je suis passionné par le développement front-end et je souhaite constamment améliorer mes compétences dans ce domaine. La formation me permettra de maîtriser les technologies modernes et les frameworks les plus utilisés...
+                </p>
+                <p class="modern-text" id="text-full" style="display: none;">
+                    Mon intérêt pour le développement web et les applications découle de plusieurs motivations profondes. Tout d'abord, je suis passionné par le développement front-end et je souhaite constamment améliorer mes compétences dans ce domaine. La formation me permettra de maîtriser les technologies modernes et les frameworks les plus utilisés, comme Vue.js, React, et Angular. Le front-end est l'interface directe entre l'utilisateur et l'application, et je suis motivé par la possibilité de créer des expériences utilisateur intuitives et attrayantes.<br><br>
+                    
+                    Ensuite, je suis convaincu que suivre les bonnes pratiques de développement est essentiel pour produire du code de haute qualité et maintenable. La formation me permettra d'apprendre ces pratiques et de les appliquer dans des environnements de développement professionnels. Je souhaite également acquérir les compétences nécessaires pour mener à bien des projets complexes, en utilisant des outils et des méthodologies éprouvées pour la gestion de projet et le développement logiciel.<br><br>
+                
+                    Mes objectifs à long terme sont clairs et ambitieux. Je vise un poste de développeur full-stack, capable de travailler à la fois sur le front-end et le back-end, ou de me spécialiser en tant que développeur front-end. Je suis particulièrement intéressé par le développement de projets dans le domaine des jeux mobiles et des jeux vidéos, où je pourrai créer des applications et des jeux offrant des expériences immersives et engageantes.<br><br>
+                
+                    De plus, je suis fasciné par les technologies émergentes comme la blockchain et le Web3. Je souhaite contribuer à cette révolution en développant des applications décentralisées (dApps) et en explorant les possibilités offertes par ces technologies pour améliorer la sécurité, la transparence et l'efficacité des transactions en ligne.<br><br>
+                
+                    Enfin, je suis motivé par l'idée d'intégrer des outils d'intelligence artificielle dans des applications pour automatiser des tâches, améliorer l'expérience utilisateur et offrir des fonctionnalités avancées. Utiliser l'IA pour créer des applications personnalisées qui répondent aux besoins spécifiques des utilisateurs est un objectif clé pour moi.<br><br>
+                
+                    En résumé, ma motivation pour suivre cette formation découle de mon désir de développer mes compétences en front-end, d'apprendre les bonnes pratiques et de m'immerger dans des environnements de développement professionnels. Mes objectifs à long terme incluent devenir un développeur full-stack ou front-end, travailler sur des projets innovants dans les jeux mobiles, les jeux vidéos, la blockchain et le Web3, et intégrer des outils d'intelligence artificielle dans des applications pour offrir des solutions avancées et personnalisées.
+                </p>
+                <button id="read-more-btn" class="read-more-btn">Lire la suite</button>
+            </div>
+        </div>
+        
+        <!-- Contenu alternatif (caché par défaut) -->
+        <div id="alt-content" style="display: none;">
+            <h1 class="neon-text" id="alt-title">Ma première page web</h1>
+            <div class="alt-image-container">
+                <a href="https://atlantisdesigns.fr" target="_blank">
+                    <img src="https://atlantisdesigns.fr/wp-content/uploads/2025/01/web-design.jpg" alt="Web Design" class="alt-image">
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Fonctionnalité pour le bouton "lire la suite"
+        document.getElementById('read-more-btn').addEventListener('click', function() {
+            const preview = document.getElementById('text-preview');
+            const fullText = document.getElementById('text-full');
+            const button = document.getElementById('read-more-btn');
+            
+            if (fullText.style.display === 'none') {
+                preview.style.display = 'none';
+                fullText.style.display = 'block';
+                button.textContent = 'Voir moins';
+            } else {
+                preview.style.display = 'block';
+                fullText.style.display = 'none';
+                button.textContent = 'Lire la suite';
+            }
+        });
+        
+        // Fonctionnalité pour l'icône toggle
+        document.getElementById('toggle-view').addEventListener('click', function() {
+            const mainContent = document.getElementById('main-content');
+            const altContent = document.getElementById('alt-content');
+            const toggleIcon = document.getElementById('toggle-view');
+            const iconElement = toggleIcon.querySelector('i');
+            
+            if (mainContent.style.display !== 'none') {
+                mainContent.style.display = 'none';
+                altContent.style.display = 'block';
+                iconElement.className = 'fas fa-times';
+                startTitleChange();
+            } else {
+                mainContent.style.display = 'block';
+                altContent.style.display = 'none';
+                iconElement.className = 'fas fa-eye';
+                stopTitleChange();
+            }
+        });
+        
+        // Fonction pour changer occasionnellement le titre en "Ou pas"
+        let titleInterval;
+        function startTitleChange() {
+            const altTitle = document.getElementById('alt-title');
+            titleInterval = setInterval(function() {
+                if (Math.random() > 0.2) { // Changé de 0.5 à 0.2 pour augmenter la probabilité
+                    altTitle.textContent = "Ou pas";
+                    setTimeout(function() {
+                        altTitle.textContent = "Ma première page web";
+                    }, 1000);
+                }
+            }, 2000); // Réduit de 3000ms à 2000ms pour plus de fréquence
+        }
+        
+        function stopTitleChange() {
+            clearInterval(titleInterval);
+            document.getElementById('alt-title').textContent = "Ma première page web";
+        }
+    </script>
+    
+    <!-- Script du jeu Space Invaders -->
+    <script src="space-invaders.js"></script>
+</body>
+</html>

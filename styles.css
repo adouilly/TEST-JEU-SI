@@ -1,0 +1,340 @@
+html, body {
+    height: 100%;
+    overflow: hidden; /* Désactive le scroll */
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #121212;
+    background-image: url('https://i.postimg.cc/h43VNj90/Comfy-UI-00113.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Ajout de l'overlay vert fluo */
+.green-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #00ff00; /* Vert fluo */
+    opacity: 0;
+    pointer-events: none; /* Pour ne pas interférer avec les clics */
+    z-index: 1; /* Au-dessus du fond mais en dessous du contenu */
+    transition: opacity 0.3s ease;
+    mix-blend-mode: overlay; /* Pour un meilleur mélange avec le fond */
+}
+
+/* Style pour le canvas du jeu Space Invaders */
+#spaceInvaders {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Placer entre le fond et le conteneur */
+    opacity: 0.4; /* Semi-transparent pour ne pas distraire */
+    pointer-events: auto; /* Permettre l'interaction avec le canvas */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    max-height: calc(100vh - 100px); /* Réduit la hauteur pour avoir 50px d'espace en haut et en bas */
+    padding: 75px;
+    border-radius: 50px;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow-y: auto;
+    margin: 50px 0; /* Ajoute une marge verticale */
+    scrollbar-width: thin;
+    scrollbar-color: #bf00ff rgba(0, 0, 0, 0.3);
+    scroll-behavior: smooth;
+    z-index: 2; /* Assurer que le conteneur est au-dessus du jeu */
+}
+
+/* Personnalisation de la barre de défilement */
+.container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #bf00ff, #00ff00);
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(191, 0, 255, 0.7);
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00ff00, #bf00ff);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7), 0 0 20px rgba(191, 0, 255, 0.5);
+}
+
+.image-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 50px;
+    margin-left: auto;  /* Ajout pour le centrage */
+    margin-right: auto; /* Ajout pour le centrage */
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    display: block;     /* Assure que les marges auto fonctionnent */
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.neon-text {
+    color: white;
+    text-shadow: 
+        0 0 3px #fff,
+        0 0 6px #fff,
+        0 0 10px #bf00ff,
+        0 0 12px #bf00ff;
+    font-size: 42px;
+    text-align: center;
+    margin-bottom: 30px;
+    animation: neon-flicker 3s infinite alternate;
+}
+
+@keyframes neon-flicker {
+    0%, 92%, 94%, 96%, 98%, 100% {
+        text-shadow: 
+            0 0 3px #fff,
+            0 0 6px #fff,
+            0 0 10px #bf00ff,
+            0 0 12px #bf00ff,
+            0 0 15px #00ff00;
+    }
+    93%, 95%, 97% {
+        text-shadow: 
+            0 0 2px #fff,
+            0 0 4px #bf00ff;
+    }
+}
+
+.modern-text {
+    color: white;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    max-width: 600px;
+}
+
+.text-container {
+    width: 100%;
+    position: relative;
+    margin-top: 50px;
+    padding: 0 0 50px 0; /* Ajoute un espacement en bas du conteneur de texte */
+}
+
+.read-more-btn {
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: 1px solid #ffffff; /* Changé de #bf00ff à #ffffff */
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px #ffffff; /* Changé de #bf00ff à #ffffff */
+}
+
+.read-more-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Changé pour assortir avec le blanc */
+    box-shadow: 0 0 10px #ffffff; /* Changé de #bf00ff à #ffffff */
+}
+
+.qr-code-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 50px 0; /* Augmentation de l'espacement */
+    transition: all 0.3s ease;
+}
+
+.qr-code-image {
+    max-width: 750px; /* 3 fois plus grande que 250px */
+    width: 100%;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.qr-code-image:hover {
+    transform: scale(1.02); /* Réduit un peu l'échelle pour éviter de sortir de l'écran */
+    box-shadow: 0 0 20px #00ff00, 0 0 30px rgba(191, 0, 255, 0.7);
+}
+
+/* Ajouter un style pour l'image au survol */
+.image-container:hover ~ #main-title {
+    animation: neon-green-flicker 2s infinite alternate;
+}
+
+.title-container {
+    width: 100%;
+    height: auto;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.content-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Ajout d'animation pour le titre quand l'image du haut est survolée */
+.image-container:hover ~ .title-container .neon-text {
+    animation: neon-green-flicker 2s infinite alternate;
+}
+
+/* Style pour l'icône toggle - avec contours blancs */
+.toggle-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    border: 1px solid #ffffff;
+}
+
+.toggle-icon:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Changé pour assortir avec le blanc */
+    box-shadow: 0 0 10px #ffffff, 0 0 15px rgba(255, 255, 255, 0.5); /* Changé pour un effet blanc */
+}
+
+.toggle-icon i {
+    color: white;
+    font-size: 20px;
+    text-shadow: 0 0 5px #ffffff; /* Changé de #bf00ff à #ffffff */
+}
+
+/* Style pour le contenu alternatif */
+#alt-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.alt-image-container {
+    margin-top: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.alt-image {
+    max-width: 100%;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.alt-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px #bf00ff, 0 0 30px rgba(191, 0, 255, 0.7); /* Changé de vert à violet */
+}
+
+/* Animation spéciale pour le titre alternatif */
+#alt-title {
+    transition: text-shadow 0.3s ease;
+}
+
+#alt-title:contains("Ou pas") {
+    animation: neon-green-flicker 1s infinite alternate;
+}
+
+@keyframes neon-green-flicker {
+    0%, 92%, 94%, 96%, 98%, 100% {
+        text-shadow: 
+            0 0 3px #fff,
+            0 0 6px #fff,
+            0 0 10px #00ff00,
+            0 0 15px #00ff00;
+    }
+    93%, 95%, 97% {
+        text-shadow: 
+            0 0 2px #fff,
+            0 0 4px #00ff00;
+    }
+}
+
+/* Style pour assurer le centrage des éléments dans le contenu principal */
+#main-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Style pour l'icône fusée qui active/désactive le jeu */
+.rocket-icon {
+    top: 70px; /* Positionnée en dessous de l'icône œil */
+    right: 20px; /* Alignée avec l'icône œil sur la droite */
+    left: auto; /* Supprime le positionnement à gauche */
+}
+
+/* Style pour le compteur de score */
+#score-counter {
+    position: fixed;
+    bottom: 60px; /* Augmenté pour plus d'espace avec le vaisseau */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    z-index: 1;
+    text-shadow: 0 0 5px #bf00ff, 0 0 10px #00ff00;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 10px rgba(191, 0, 255, 0.5);
+}
