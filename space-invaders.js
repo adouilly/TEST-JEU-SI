@@ -111,6 +111,13 @@ document.addEventListener("DOMContentLoaded", function() {
         mouseX = event.clientX;
     });
 
+    // Ajouter après l'écouteur de mousemove
+    document.addEventListener('keydown', function(event) {
+        if (event.code === 'Space' && player.bombAmmo > 0) {
+            player.shootBomb();
+        }
+    });
+
     // Classe pour le vaisseau joueur
     class Player {
         constructor() {
@@ -127,6 +134,8 @@ document.addEventListener("DOMContentLoaded", function() {
             this.multiShotTimer = 0;
             this.thrusterParticles = []; // Tableau pour stocker les particules des propulseurs
             this.thrusterCooldown = 0;
+            this.bombAmmo = 0;
+            this.killCount = 0;
         }
         
         update() {
@@ -198,6 +207,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 }
             }
+
+            if (this.killCount >= 10) { // Gagner une bombe tous les 10 kills
+                this.bombAmmo++;
+                this.killCount = 0;
+            }
         }
         
         shootSalvo() {
@@ -211,6 +225,13 @@ document.addEventListener("DOMContentLoaded", function() {
             this.bullets.push(new Bullet(this.x + this.width / 2, this.y, 0));
         }
         
+        shootBomb() {
+            if (this.bombAmmo > 0) {
+                this.bullets.push(new Bomb(this.x + this.width/2, this.y));
+                this.bombAmmo--;
+            }
+        }
+
         hit() {
             // Le vaisseau est touché
             this.alive = false;
@@ -314,6 +335,74 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
+    // Ajouter après la classe Bullet
+    class Bomb extends Bullet {
+        constructor(x, y) {
+            super(x, y, 0);
+            this.explosionRadius = 100;
+            this.width = 8;
+            this.height = 16;
+            this.speed = 5;
+            this.color = COLORS.purple;
+            this.hasExploded = false;
+        }
+
+        update() {
+            if (!this.hasExploded) {
+                this.y -= this.speed;
+                
+                // Effet de pulsation plus prononcé pour la bombe
+                this.glowIntensity += this.pulseDirection * (this.pulseSpeed * 2);
+                
+                if (this.y <= 200) { // Explosion à une certaine hauteur
+                    this.explode();
+                }
+            }
+        }
+
+        explode() {
+            this.hasExploded = true;
+            createExplosion(this.x, this.y, 50); // Plus de particules
+            
+            // Dégâts de zone
+            invaders.forEach((invader, index) => {
+                const distance = Math.sqrt(
+                    Math.pow(this.x - (invader.x + invader.width/2), 2) +
+                    Math.pow(this.y - (invader.y + invader.height/2), 2)
+                );
+                
+                if (distance <= this.explosionRadius) {
+                    const damage = Math.floor(3 * (1 - distance/this.explosionRadius));
+                    for(let i = 0; i < damage; i++) {
+                        invader.takeDamage();
+                    }
+                }
+            });
+        }
+
+        draw() {
+            if (this.hasExploded) return;
+            
+            // Effet de traînée spécial pour la bombe
+            ctx.globalAlpha = 0.6;
+            ctx.fillStyle = this.color;
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = this.glowIntensity;
+            
+            // Corps de la bombe
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x - this.width/2, this.y + this.height);
+            ctx.lineTo(this.x + this.width/2, this.y + this.height);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Réinitialiser les paramètres
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1.0;
+        }
+    }
+
     // Classe pour les effets de particules (explosions)
     class Particle {
         constructor(x, y, size = null, speedMultiplier = 1) {
@@ -486,6 +575,68 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
+    // Ajouter après la classe Invader
+    class InvaderManager {
+        constructor() {
+            this.invaders = [];
+            this.eventTimer = 0;
+            this.eventInterval = 300; // Délai entre les événements
+        }
+
+        update() {
+            this.eventTimer++;
+            if (this.eventTimer >= this.eventInterval) {
+                this.triggerRandomEvent();
+                this.eventTimer = 0;
+            }
+
+            this.invaders.forEach(invader => invader.update());
+        }
+
+        triggerRandomEvent() {
+            const event = Math.random();
+            
+            if (event < 0.3) { // 30% chance de pluie d'attaques
+                this.rainAttack();
+            } else if (event < 0.6) { // 30% chance de téléportation
+                this.teleportInvaders();
+            } else { // 40% chance de vague d'invisibilité
+                this.invisibilityWave();
+            }
+        }
+
+        rainAttack() {
+            this.invaders.forEach(invader => {
+                if (Math.random() < 0.7) { // 70% de chance de tirer pour chaque invader
+                    invader.shoot();
+                }
+            });
+        }
+
+        teleportInvaders() {
+            this.invaders.forEach(invader => {
+                if (Math.random() < 0.3) { // 30% de chance de téléportation
+                    invader.x = Math.random() * (canvas.width - invader.width);
+                    invader.y = Math.random() * 200 + 50;
+                    
+                    // Effet visuel de téléportation
+                    createExplosion(invader.x, invader.y, 10);
+                }
+            });
+        }
+
+        invisibilityWave() {
+            this.invaders.forEach(invader => {
+                if (Math.random() < 0.5) { // 50% de chance de devenir invisible
+                    invader.isInvisible = true;
+                    setTimeout(() => {
+                        invader.isInvisible = false;
+                    }, 2000); // Redevient visible après 2 secondes
+                }
+            });
+        }
+    }
+    
     // Initialisation du jeu
     const player = new Player();
     let invaders = [];
@@ -604,6 +755,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         if (player.alive) {
                             score++;
                             updateScore();
+                            player.killCount++;
                         }
                     } else {
                         // Créer quelques particules pour indiquer le coup sans destruction
