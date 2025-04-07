@@ -25,17 +25,43 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Gestion de l'affichage du jeu
     toggleGameBtn.addEventListener('click', function() {
-        const gameVisible = canvas.style.display !== 'none';
-        canvas.style.display = gameVisible ? 'none' : 'block';
+        const canvas = document.getElementById('spaceInvaders');
+        const container = document.querySelector('.container');
+        const closeBtn = document.getElementById('close-game');
+        const scoreCounter = document.getElementById('score-counter');
         
-        // Réinitialiser le score lors de l'activation du jeu
-        if (!gameVisible) {
-            score = 0;
-            updateScore();
-            createInvaders();
-        }
+        // Afficher le jeu en plein écran
+        canvas.style.display = 'block';
+        canvas.classList.add('fullscreen');
+        scoreCounter.style.display = 'block';
         
-        updateScoreVisibility();
+        // Cacher le conteneur principal
+        container.style.display = 'none';
+        
+        // Afficher le bouton de fermeture
+        closeBtn.style.display = 'flex';
+        
+        // Réinitialiser le jeu
+        score = 0;
+        updateScore();
+        createInvaders();
+    });
+
+    // Ajouter le gestionnaire d'événements pour le bouton de fermeture
+    document.getElementById('close-game').addEventListener('click', function() {
+        const canvas = document.getElementById('spaceInvaders');
+        const container = document.querySelector('.container');
+        const closeBtn = document.getElementById('close-game');
+        const scoreCounter = document.getElementById('score-counter');
+        
+        // Cacher le jeu et le bouton de fermeture
+        canvas.style.display = 'none';
+        canvas.classList.remove('fullscreen');
+        closeBtn.style.display = 'none';
+        scoreCounter.style.display = 'none';
+        
+        // Réafficher le conteneur principal
+        container.style.display = 'flex';
     });
     
     // Interaction avec le bouton "Lire la suite"/"Voir moins"
